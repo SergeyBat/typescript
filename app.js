@@ -1,2 +1,6 @@
 "use strict";
-const a = 1;
+var PaymentStatus;
+(function (PaymentStatus) {
+    PaymentStatus["Success"] = "success";
+    PaymentStatus["Failed"] = "failed";
+})(PaymentStatus || (PaymentStatus = {}));
