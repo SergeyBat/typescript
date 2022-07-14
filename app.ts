@@ -1,23 +1,24 @@
-abstract class Logger {
-	abstract log(message: string): void;
-
-	printDate(date: Date) {
-		this.log(date.toString())
+function toString<T> (data: T): string | undefined {
+	if(Array.isArray(data)) {
+		return data.toString();
+	}
+	switch (typeof data) {
+		case 'string':
+			return data;
+		case 'number':
+		case 'symbol':
+		case 'bigint':
+		case 'boolean':
+		case 'function':
+			return data.toString();
+		case 'object':
+			return JSON.stringify(data);
+		default:
+			return undefined;
 	}
 }
 
-class MyLogger extends Logger {
-	log(message: any): void {
-		console.log(message)
-	}
-
-	logWithDate(message: string){
-		let date = new Date;
-		this.printDate(date)
-		this.log(message)
-
-	}
-}
-
-const c = new MyLogger;
-c.logWithDate("Все отлично")
+console.log(toString(3));
+console.log(toString(true));
+console.log(toString(['a', 'b']));
+console.log(toString({a: 1}));
