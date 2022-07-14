@@ -1,14 +1,72 @@
-class User {
-	skills: string[];
-	addSkill(skill: string): void;
-	addSkill(skills: string[]): void;
-	addSkill(skillOrSkills: string | string[]) {
-		if (typeof skillOrSkills === 'string') {
-			this.skills.push(skillOrSkills)
-		} else {
-			this.skills.concat(skillOrSkills)
-		}
+class Product {
+	constructor(
+		public id: number,
+		public title: string,
+		public price: number
+	) { }
+
+}
+
+class Delivery {
+	constructor(
+		public date: Date
+	) { }
+}
+
+class HoumeDelivery extends Delivery {
+	constructor(date: Date, public address: string) {
+		super(date)
 	}
 }
 
-new User().addSkill("dev")
+class ShopDelivery extends Delivery {
+	constructor(public shopId: number) {
+		super(new Date())
+	}
+}
+
+
+type DeliveryOptions = HoumeDelivery | ShopDelivery;
+
+class Cart {
+	private products: Product[] = [];
+	private delivery: DeliveryOptions;
+
+
+	public addProduct(product: Product): void {
+		this.products.push(product);
+	}
+
+	public deleteProduct(productId: number): void {
+		this.products = this.products.filter((p: Product) => p.id !== productId);
+	}
+
+	public getSum(): number {
+		return this.products
+			.map((p: Product) => p.price)
+			.reduce((p1: number, p2: number) => p1 + p2)
+	}
+
+	public setDelivery(delivery: DeliveryOptions): void {
+		this.delivery = delivery
+	}
+
+	public checkout() {
+		if (this.products.length == 0) {
+			throw new Error('Нет ни одного товара в корзине');
+		}
+		if (!this.delivery) {
+			throw new Error('Не указан способ доставки');
+		}
+		return { success: true };
+	}
+}
+
+const cart = new Cart();
+cart.addProduct(new Product(1, "Печенье", 10));
+cart.addProduct(new Product(2, "Торт", 30));
+cart.addProduct(new Product(3, "Шоколад", 20));
+cart.deleteProduct(1);
+cart.setDelivery(new HoumeDelivery(new Date, ""))
+console.log(cart.getSum());
+console.log(cart.checkout());
